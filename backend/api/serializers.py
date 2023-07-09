@@ -8,7 +8,8 @@ from django.shortcuts import get_object_or_404
 from rest_framework import serializers
 
 from api.constants import (
-    MAX_VALUE_COOKING_TIME, MIN_VALUE_COOKING_TIME, ErrorMessage
+    MAX_VALUE_AMOUNT, MAX_VALUE_COOKING_TIME, MIN_VALUE_AMOUNT,
+    MIN_VALUE_COOKING_TIME, ErrorMessage
 )
 from recipes.models import (
     Favorite, Ingredient, IngredientRecipe, Recipe, ShoppingCart, Subscription,
@@ -97,7 +98,7 @@ class RecipeBaseSerializer(serializers.ModelSerializer):
 
 
 class IngredientRecipeSerializer(serializers.ModelSerializer):
-    """Сериализатор для связей рецептов с ингредиентами"""
+    """Сериализатор для связей рецептов-ингредиентов при отображении рецепта"""
     id = serializers.IntegerField(source='ingredient.id')
     name = serializers.CharField(source='ingredient.name')
     measurement_unit = serializers.CharField(
@@ -160,6 +161,9 @@ class IngredientRecipeBaseSerializer(serializers.ModelSerializer):
     изменении рецепта
     """
     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
+    amount = serializers.IntegerField(
+        min_value=MIN_VALUE_AMOUNT, max_value=MAX_VALUE_AMOUNT
+    )
 
     class Meta:
         model = IngredientRecipe
@@ -253,11 +257,16 @@ class UserWithRecipeSerializer(CustomUserSerializer):
         instance = obj.recipes.all()
         if recipes_limit:
             try:
-                instance = instance[:int(recipes_limit)]
-            except Exception:
+                recipes_limit = int(recipes_limit)
+            except ValueError:
                 raise serializers.ValidationError(
                     ErrorMessage.RECIPES_LIMIT_TYPE
                 )
+            if recipes_limit < 0:
+                raise serializers.ValidationError(
+                    ErrorMessage.RECIPES_LIMIT_NOT_POSITIVE
+                )
+            instance = instance[:recipes_limit]
         return RecipeBaseSerializer(instance, many=True).data
 
     def get_recipes_count(self, obj):

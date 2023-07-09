@@ -9,7 +9,9 @@ from rest_framework import mixins, permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from api.constants import ErrorMessage, HTTPMethod
+from api.constants import (
+    SHOPPING_LIST_FILE_CONTENT_TYPE, SHOPPING_LIST_FILE_NAME, HTTPMethod
+)
 from api.filters import IngredientFilter, RecipeFilter
 from api.permissions import IsAuthorChangeRecipePermission
 from api.serializers import (
@@ -74,10 +76,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
         else:
             content += '\nВ Списке покупок отсутствуют рецепты.'
         response = HttpResponse(
-            content, content_type='text/plain; charset=utf8'
+            content, content_type=SHOPPING_LIST_FILE_CONTENT_TYPE
         )
         response['Content-Disposition'] = (
-            'attachment; filename="shopping_cart.txt"'
+            f'attachment; filename="{SHOPPING_LIST_FILE_NAME}"'
         )
         return response
 
@@ -116,20 +118,10 @@ class FavoriteViewSet(CreateDestroyViewSet):
 
     @transaction.atomic
     def delete(self, request, *args, **kwargs):
-        try:
-            recipe = Recipe.objects.get(id=self.kwargs.get('recipe_id'))
-        except Exception:
-            return Response(
-                data={'errors': ErrorMessage.NOT_EXISTED_RECIPE},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        try:
-            instance = Favorite.objects.get(user=request.user, recipe=recipe)
-        except Exception:
-            return Response(
-                data={'errors': ErrorMessage.RECIPE_NOT_IN_FAVORITES},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        recipe = get_object_or_404(Recipe, id=self.kwargs.get('recipe_id'))
+        instance = get_object_or_404(
+            Favorite, user=request.user, recipe=recipe
+        )
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -154,22 +146,10 @@ class ShoppingCartViewSet(CreateDestroyViewSet):
 
     @transaction.atomic
     def delete(self, request, *args, **kwargs):
-        try:
-            recipe = Recipe.objects.get(id=self.kwargs.get('recipe_id'))
-        except Exception:
-            return Response(
-                data={'errors': ErrorMessage.NOT_EXISTED_RECIPE},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        try:
-            instance = ShoppingCart.objects.get(
-                user=request.user, recipe=recipe
-            )
-        except Exception:
-            return Response(
-                data={'errors': ErrorMessage.RECIPE_NOT_IN_SHOPPING_CART},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        recipe = get_object_or_404(Recipe, id=self.kwargs.get('recipe_id'))
+        instance = get_object_or_404(
+            ShoppingCart, user=request.user, recipe=recipe
+        )
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -193,27 +173,11 @@ class SubscribtionViewSet(CreateDestroyViewSet, mixins.ListModelMixin):
     def get_queryset(self):
         return self.request.user.subscriptions.all()
 
-    def create(self, request, *args, **kwargs):
-        try:
-            User.objects.get(id=self.kwargs.get('author_id'))
-        except Exception:
-            return Response(
-                data={'detail': 'Страница не найдена.'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-        return super().create(request, *args, **kwargs)
-
     @transaction.atomic
     def delete(self, request, *args, **kwargs):
         author = get_object_or_404(User, id=self.kwargs.get('author_id'))
-        try:
-            instance = Subscription.objects.get(
-                user=request.user, author=author
-            )
-        except Exception:
-            return Response(
-                data={'errors': ErrorMessage.AUTHOR_NOT_IN_SUBSCRIPTION},
-                status=status.HTTP_400_BAD_REQUEST
-            )
+        instance = get_object_or_404(
+            Subscription, user=request.user, author=author
+        )
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

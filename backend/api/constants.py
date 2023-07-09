@@ -1,18 +1,23 @@
 REGEX_HEX_COLOR = r'^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
+# регулярное выражение для проверки формата кода цвета в HEX
 REGEX_USERNAME = r'^[\w.@+-]+\Z'
+# регулярное выражение для проверки формата username
 
 MIN_VALUE_COOKING_TIME = 1
 MAX_VALUE_COOKING_TIME = 10000
 MIN_VALUE_AMOUNT = 1
 MAX_VALUE_AMOUNT = 100000
 
+SHOPPING_LIST_FILE_CONTENT_TYPE = 'text/plain; charset=utf8'
+SHOPPING_LIST_FILE_NAME = 'shopping_cart.txt'
+
 
 class ErrorMessage:
     REGEX_HEX_COLOR = (
-        f'Значение `color` не удовлетворяет шаблону "{REGEX_HEX_COLOR}"'
+        f'Значение `color` не удовлетворяет шаблону `{REGEX_HEX_COLOR}`'
     )
     REGEX_USERNAME = (
-        f'Значение `username` не удовлетворяет шаблону "{REGEX_USERNAME}"'
+        f'Значение `username` не удовлетворяет шаблону `{REGEX_USERNAME}`'
     )
     IS_NOT_RECIPE_OWNER = 'Изменение и удаление чужих рецептов запрещено'
     ALREADY_EXIST_INGREDIENT_UNIT = (
@@ -21,7 +26,10 @@ class ErrorMessage:
     ALREADY_EXIST_RECIPE_AUTHOR = (
         'Автор не может создать два рецепта с одинаковым названием'
     )
-    RECIPES_LIMIT_TYPE = 'Значение "recipes_limit" должно быть числом!'
+    RECIPES_LIMIT_TYPE = 'Значение `recipes_limit` должно быть числом!'
+    RECIPES_LIMIT_NOT_POSITIVE = (
+        'Значение `recipes_limit` не может быть меньше нуля'
+    )
     ALREADY_EXIST_RECIPE_IN_SHOPPING_CART = (
         'Добавить рецепт в Список покупок дважды невозможно'
     )

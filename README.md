@@ -1,9 +1,4 @@
 # praktikum_new_diplom
-DOMAIN: simpletaski.hopto.org
-SUPERUSER:
-- login: olga_admin
-- password: password&79
-
 
 # Как работать с репозиторием финального задания
 1. Клонировать репозиторий и перейти в него в командной строке:
@@ -19,19 +14,19 @@ touch .env
 3. Запустить проект локально в контейнерах:
 ```
 cd /c/Dev/foodgram-project-react/infra
-docker compose up
+docker compose -f docker-compose.production.yml up
+docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic --noinput
+docker compose -f docker-compose.production.yml exec backend cp -r /app/collected_static/. /backend_static/static/
+docker compose -f docker-compose.production.yml exec backend python manage.py migrate
+
 ```
-4. Скопировать статику
+4. Создать суперюзера
 ```
-docker compose exec backend cp -r /app/collected_static/. /app/backend_static/
+docker compose -f docker-compose.production.yml exec backend python manage.py createsuperuser
 ```
-5. Создать суперюзера
+5. Наполнить базу тестовыми данными
 ```
-docker compose exec backend python manage.py createsuperuser
+docker compose -f docker-compose.production.yml exec backend python manage.py import_ingredients
+docker compose -f docker-compose.production.yml exec backend python manage.py add_initial_data
 ```
-6. Наполнить базу тестовыми данными
-```
-docker compose exec backend python manage.py import_ingredients
-docker compose exec backend python manage.py add_initial_data
-```
-7. Доступные эндпоинты в API описаны http://localhost/api/docs/
+6. Доступные эндпоинты в API описаны http://localhost/api/docs/

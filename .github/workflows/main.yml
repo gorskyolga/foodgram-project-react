@@ -83,8 +83,8 @@ jobs:
           context: ./frontend/
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:latest
-  copy_files_for_nginx_to_server:
-    name: Copy files for nginx to the server
+  copy_file_for_nginx_to_server:
+    name: Copy nginx.conf to the server
     runs-on: ubuntu-latest
     if: |
       github.ref == 'refs/heads/master' ||
@@ -99,7 +99,7 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          source: "infra/nginx.conf"
+          source: "nginx.conf"
           target: "foodgram-project-react/infra"
   deploy:
     runs-on: ubuntu-latest
@@ -117,7 +117,7 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
-        source: "infra/docker-compose.production.yml"
+        source: "docker-compose.production.yml"
         target: "foodgram-project-react/infra"
     - name: Executing remote ssh commands to deploy
       uses: appleboy/ssh-action@master

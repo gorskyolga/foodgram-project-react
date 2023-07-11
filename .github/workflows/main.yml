@@ -1,12 +1,12 @@
 name: Main Foodgram workflow
 
-on:
-  push:
-    branches:    
-      - develop
-  pull_request:
-    branches:    
-      - master
+on: push
+  # push:
+  #   branches:
+  #     - develop
+  # pull_request:
+  #   branches:
+  #     - master
 
 jobs:
   tests:
@@ -71,9 +71,10 @@ jobs:
   build_frontend_and_push_to_docker_hub:
     name: Push frontend Docker image to DockerHub
     runs-on: ubuntu-latest
-    if: |
-      github.ref == 'refs/heads/master' ||
-      (github.event_name == 'pull_request' && github.base_ref == 'refs/heads/master')
+    if: github.ref == 'refs/heads/master'
+    # if: |
+    #   github.ref == 'refs/heads/master' ||
+    #   (github.event_name == 'pull_request' && github.base_ref == 'refs/heads/master')
     steps:
       - name: Check out the repo
         uses: actions/checkout@v3
@@ -93,7 +94,7 @@ jobs:
   copy_file_for_nginx_to_server:
     name: Copy nginx.conf to the server
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.base_ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     # if: |
     #   github.ref == 'refs/heads/master' ||
     #   (github.event_name == 'pull_request' && github.base_ref == 'refs/heads/master')

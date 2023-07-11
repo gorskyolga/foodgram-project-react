@@ -90,8 +90,8 @@ jobs:
       github.ref == 'refs/heads/master' ||
       (github.event_name == 'pull_request' && github.base_ref == 'refs/heads/master')
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
       - name: Copy nginx.conf via ssh
         uses: appleboy/scp-action@master
         with:

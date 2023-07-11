@@ -7,4 +7,4 @@ COPY requirements.txt ./
 RUN pip install -U pip &&\
     pip install -r requirements.txt --no-cache-dir
 COPY . .
-CMD ["bash", "/app/run_app.sh"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "foodgram_backend.wsgi"]

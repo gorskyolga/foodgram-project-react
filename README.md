@@ -1,4 +1,9 @@
 # praktikum_new_diplom
+DOMAIN: simpletaski.hopto.org
+SUPERUSER:
+- login: olga_admin
+- password: password&79
+
 
 # Как работать с репозиторием финального задания
 1. Клонировать репозиторий и перейти в него в командной строке:

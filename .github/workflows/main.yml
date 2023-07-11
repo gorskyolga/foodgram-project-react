@@ -2,6 +2,7 @@ name: Main Foodgram workflow
 
 on:
   push
+  pull_request
 
 jobs:
   tests:

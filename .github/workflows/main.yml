@@ -2,11 +2,11 @@ name: Main Foodgram workflow
 
 on:
   push:
-    branches:    
-      - 'develop'
+    branches:
+      - develop
   pull_request:
-    branches:    
-      - 'master'
+    branches:
+      - master
 
 jobs:
   tests:

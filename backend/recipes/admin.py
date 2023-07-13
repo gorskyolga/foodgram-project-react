@@ -27,6 +27,13 @@ class IngredientAdmin(admin.ModelAdmin):
 class IngredientRecipeInline(admin.TabularInline):
     model = IngredientRecipe
     extra = 1
+    fields = ('ingredient', 'amount', 'unit')
+    readonly_fields = ('unit',)
+    raw_id_fields = ('ingredient',)
+
+    @admin.display(description='Единица измерения')
+    def unit(self, obj) -> str:
+        return obj.ingredient.measurement_unit
 
 
 class TagRecipeInline(admin.TabularInline):
@@ -87,13 +94,17 @@ class IngredientRecipeAdmin(admin.ModelAdmin):
     )
     list_filter = ('recipe__tags',)
     list_editable = ('ingredient', 'amount',)
+    raw_id_fields = ('ingredient',)
     search_fields = (
-        'recipe__name', 'recipe__author__username', 'recipe__author__email',
+        'recipe__name', 'ingredient__name', 'recipe__author__username',
+        'recipe__author__email',
     )
 
     def get_queryset(self, request: HttpRequest) -> QuerySet[Any]:
         queryset = super().get_queryset(request)
-        queryset = queryset.select_related('recipe')
+        queryset = queryset.prefetch_related(
+            'recipe', 'ingredient', 'recipe__author'
+        )
         return queryset
 
     def email(self, obj) -> str:

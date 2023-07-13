@@ -1,4 +1,9 @@
 # praktikum_new_diplom
+DOMAIN: simpletaski.hopto.org
+SUPERUSER:
+- login: olga_admin
+- password: password&79
+
 
 # Как работать с репозиторием финального задания
 1. Клонировать репозиторий и перейти в него в командной строке:
@@ -16,7 +21,7 @@ touch .env
 cd /c/Dev/foodgram-project-react/infra
 docker compose -f docker-compose.production.yml up
 docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic --noinput
-docker compose -f docker-compose.production.yml exec backend cp -r /app/collected_static/. /backend_static/static/
+docker compose -f docker-compose.production.yml exec backend cp -r /app/collected_static/. /app/backend_static/
 docker compose -f docker-compose.production.yml exec backend python manage.py migrate
 
 ```

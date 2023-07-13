@@ -229,12 +229,16 @@ class RecipeCreateUpdateSerializer(RecipeSerializer):
             raise serializers.ValidationError(
                 ErrorMessage.NOT_ADDED_INGREDIENT
             )
-        ingredient_list = [ingredient['id'] for ingredient in value]
+        return value
+
+    def validate(self, data):
+        ingredients = data['ingredientrecipe']
+        ingredient_list = [ingredient['id'] for ingredient in ingredients]
         if len(ingredient_list) != len(set(ingredient_list)):
             raise serializers.ValidationError(
                 ErrorMessage.DOUBLE_INGREDIENTS
             )
-        return value
+        return data
 
     def to_representation(self, instance):
         return RecipeSerializer(instance, context=self.context).data

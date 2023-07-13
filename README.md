@@ -1,9 +1,7 @@
 # praktikum_new_diplom
-DOMAIN: simpletaski.hopto.org
-SUPERUSER:
-- login: olga_admin
-- password: password&79
+Продуктовый помощник. Позволяет публиковать рецепты, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список «Избранное», а перед походом в магазин скачивать сводный список продуктов, необходимых для приготовления одного или нескольких выбранных блюд.
 
+Доступные эндпоинты в API описаны http://domain/api/docs/
 
 # Как работать с репозиторием финального задания
 1. Клонировать репозиторий и перейти в него в командной строке:
@@ -34,4 +32,3 @@ docker compose -f docker-compose.production.yml exec backend python manage.py cr
 docker compose -f docker-compose.production.yml exec backend python manage.py import_ingredients
 docker compose -f docker-compose.production.yml exec backend python manage.py add_initial_data
 ```
-6. Доступные эндпоинты в API описаны http://localhost/api/docs/

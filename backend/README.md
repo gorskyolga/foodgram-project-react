@@ -6,10 +6,6 @@
 git clone https://github.com/gorskyolga/foodgram-project-react.git
 ```
 
-```
-cd backend/kittygram_backend
-```
-
 Cоздать и активировать виртуальное окружение:
 
 ```
